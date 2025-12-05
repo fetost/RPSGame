@@ -13,7 +13,7 @@ public class Main {
         Random random = new Random(); // Random here so its not made each iteration
         System.out.println("Enter one of the moves below:");
         System.out.println("Rock" + "\n" + "Paper" + "\n" + "Scissors");
-        
+        // test
         while (true) {
             System.out.print("> ");
             String userMove = scanner.nextLine(); 
