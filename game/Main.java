@@ -6,16 +6,19 @@ import java.util.Scanner;
 
 // TODO: imlement validation for edge cases for server/client connection
 // TODO: double check the logic of the server/client connection
-// TODO: check if the logic of choosing server/client can be moved to a different class or if its even necessary
 // TODO: test the connection on a different computer 
 // TODO: implement an interface instead of using the terminal
 
 public class Main {
     public static void main(String[] args) throws ValidationException, IOException {       
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Type either host or client");
+        System.out.println("Are you hosting? (y/n)");
         System.out.print("> ");
+
         String choice = scanner.nextLine().trim().toLowerCase(); 
+        if (!choice.equals("y") && !choice.equals("n")) {
+            throw new ValidationException("Learn to read dummy");
+        }
         
         // Instances are declared here so its not made each iteration
         Random random = new Random(); 
@@ -32,7 +35,7 @@ public class Main {
             if (userMove.isEmpty()) { // have to use isEmpty because nextLine() is never null
                 throw new ValidationException("Type something idiot");
             }
-            
+
             cm.sendMessage(userMove);
             System.out.println("Waiting for opponent...");
             String opponentMove = cm.receiveMessage();

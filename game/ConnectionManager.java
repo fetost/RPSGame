@@ -8,31 +8,33 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ConnectionManager {
-    //private final boolean isServer;
     private final String isServer;
     private final int port = 5555; 
     private final String host = "localhost"; // will always be 127.0.0.1
+    private boolean serverConnected;
 
     private ServerSocket serverSocket;
     private Socket socket;
     PrintWriter out;
     BufferedReader in;
 
-    public ConnectionManager(/*boolean isServer*/String isServer) {
+    public ConnectionManager(String isServer) {
         this.isServer = isServer;
     }
 
     public void setUpConnection() {
         try {
-            if (isServer.equals("host")) {
+            if (isServer.equals("y")) {
                 startAsServer();
+                setUpStreams();
+                sendMessage("READY");
             } 
             else {
                 startAsClient();
+                setUpStreams();
             }
-            setUpStreams();
         } 
-        catch (IOException e) {
+        catch (IOException e) { // Use IOException for easy error message. Using getMessage() shows the error. 
             System.err.println("Connection setup failed: " + e.getMessage());
         }
     }
@@ -51,8 +53,19 @@ public class ConnectionManager {
 
     private void startAsClient() throws IOException {
         System.out.println("Connecting to server " + host + ":" + port + "...");
-        socket = new Socket(host, port);
-        System.out.println("Connected to server!");
+        while (!serverConnected) {
+            try {
+                socket = new Socket(host, port); // can catch IOException if server is not ready. If ready -> continue with setUpStream()
+                setUpStreams();
+                if (receiveMessage().equals("READY")) { // this makes the client have to wait for the server. 
+                    serverConnected = true;
+                    System.out.println("Connected to server!");
+                }
+            } 
+            catch (IOException e) {
+                //System.out.println("Server not ready yet");
+            }
+        }  
     }
 
     // Both sides then use their Sockets to create input and output streams for communication.
@@ -66,7 +79,7 @@ public class ConnectionManager {
         out.println(message);
     }
     
-    public String receiveMessage() throws IOException { 
+    public String receiveMessage() throws IOException { // IOException also have to be thrown here due to it being thrown in the declaration of BufferedReader.readLine().
         return in.readLine();
     }
 
