@@ -8,22 +8,23 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ConnectionManager {
-    private final boolean isServer;
-    private final int port = 5555;
-    private final String host = "localhost";
+    //private final boolean isServer;
+    private final String isServer;
+    private final int port = 5555; 
+    private final String host = "localhost"; // will always be 127.0.0.1
 
     private ServerSocket serverSocket;
     private Socket socket;
     PrintWriter out;
     BufferedReader in;
 
-    public ConnectionManager(boolean isServer) {
+    public ConnectionManager(/*boolean isServer*/String isServer) {
         this.isServer = isServer;
     }
 
     public void setUpConnection() {
         try {
-            if (isServer) {
+            if (isServer.equals("host")) {
                 startAsServer();
             } 
             else {
@@ -44,7 +45,7 @@ public class ConnectionManager {
         System.out.println("Starting server on port " + port + "...");
         serverSocket = new ServerSocket(port);
         System.out.println("Server waiting for a client to connect...");
-        socket = serverSocket.accept(); // server will stop at this line until client is connected, called blocking call.
+        socket = serverSocket.accept(); // returns socket, server will stop at this line until client is connected, called blocking call.
         System.out.println("Client connected!");
     }
 

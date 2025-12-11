@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
-// TODO: check if I should trim here or in type of play
 // TODO: imlement validation for edge cases for server/client connection
 // TODO: double check the logic of the server/client connection
+// TODO: check if the logic of choosing server/client can be moved to a different class or if its even necessary
 // TODO: test the connection on a different computer 
 // TODO: implement an interface instead of using the terminal
 
@@ -15,23 +15,12 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Type either host or client");
         System.out.print("> ");
+        String choice = scanner.nextLine().trim().toLowerCase(); 
         
         // Instances are declared here so its not made each iteration
         Random random = new Random(); 
-        ConnectionManager cm;
-
-        String choice = scanner.nextLine().trim().toLowerCase(); 
-        if (choice.equals("host")) { 
-            cm = new ConnectionManager(true);
-            cm.setUpConnection();
-        }
-        else if (choice.equals("client")) {
-            cm = new ConnectionManager(false);
-            cm.setUpConnection();
-        }
-        else {
-            throw new ValidationException("You need to type either host or client");
-        }
+        ConnectionManager cm = new ConnectionManager(choice);
+        cm.setUpConnection();
     
         while (true) {
             System.out.println("----------------------------");
@@ -39,15 +28,16 @@ public class Main {
             System.out.println("Rock" + "\n" + "Paper" + "\n" + "Scissors");
             System.out.print("> ");
 
-            String userMove = scanner.nextLine(); 
-            cm.sendMessage(userMove);
-            System.out.println("Waiting for opponent...");
-            String opponentMove = cm.receiveMessage();
+            String userMove = scanner.nextLine().trim(); 
             if (userMove.isEmpty()) { // have to use isEmpty because nextLine() is never null
                 throw new ValidationException("Type something idiot");
             }
-
-            System.out.println("User move is: " + userMove);
+            
+            cm.sendMessage(userMove);
+            System.out.println("Waiting for opponent...");
+            String opponentMove = cm.receiveMessage();
+            
+            System.out.println("Your move is: " + userMove);
             System.out.println("Opponent move is: " + opponentMove);
 
             /* 
