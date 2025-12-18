@@ -5,12 +5,33 @@ import java.util.Random;
 import java.util.Scanner;
 
 // TODO: double check the logic of the server/client connection. 
-// TODO: handle Draw as not a win. 
 // TODO: fix JavaDoc.
 // TODO: change hardcoded "localhost", allowing another computer to connect. 
 // TODO: implement username(?). Maybe add userName in the constructor for ConnectionManager?
 
+/**
+ * Entry point for the Rock-Paper-Scissors game.
+ * <p>
+ * Handles user input, sets up the network connection,
+ * and runs the main game loop.
+ * </p>
+ */
+
 public class Main {
+
+    /**
+     * Starts the Rock-Paper-Scissors game.
+     * <p>
+     * Prompts the user to host or join a game, establishes
+     * a connection, and repeatedly plays rounds until
+     * the program is terminated.
+     * </p>
+     *
+     * @param args command-line arguments (not used)
+     * @throws ValidationException if user input is invalid
+     * @throws IOException if a network error occurs
+     */
+    
     public static void main(String[] args) throws ValidationException, IOException {       
         Scanner scanner = new Scanner(System.in);
         System.out.println("Are you hosting? (y/n)");

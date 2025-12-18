@@ -7,6 +7,14 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * Manages the network connection for the Rock-Paper-Scissors game.
+ * <p>
+ * Handles both server and client setup, message sending,
+ * and message receiving over a TCP connection.
+ * </p>
+ */
+
 public class ConnectionManager {
     private final String isServer;
     private final int port = 5555; 
@@ -18,9 +26,24 @@ public class ConnectionManager {
     PrintWriter out;
     BufferedReader in;
 
+    /**
+     * Constructor for the ConnectionManager.
+     *
+     * @param isServer "y" to host the game, "n" to connect as a client
+     */
+
     public ConnectionManager(String isServer) {
         this.isServer = isServer;
     }
+
+    /**
+     * Sets up the network connection based on the chosen role.
+     * <p>
+     * If acting as a server, waits for a client to connect.
+     * If acting as a client, repeatedly attempts to connect
+     * until the server is available.
+     * </p>
+     */
 
     public void setUpConnection() {
         try {
@@ -39,7 +62,13 @@ public class ConnectionManager {
         }
     }
 
-    /* 
+    /**
+     * Starts this instance as a server and waits for a client connection.
+     *
+     * @throws IOException if the server socket fails to start or accept a connection
+     */
+
+    /* NOTE:
     A TCP connection requires one ServerSocket on the server side, whose only job is to listen for incoming connections on a specific port.
     When a client connects, the server’s ServerSocket.accept() returns a new Socket. That Socket and the client’s Socket form the TCP connection.    
     */
@@ -50,6 +79,16 @@ public class ConnectionManager {
         socket = serverSocket.accept(); // returns socket, server will stop at this line until client is connected, called blocking call.
         System.out.println("Client connected!");
     }
+
+    /**
+     * Starts this instance as a client and attempts to connect to the server.
+     * <p>
+     * The client waits until the server responds with a "READY" message
+     * before continuing.
+     * </p>
+     *
+     * @throws IOException if a connection attempt fails
+     */
 
     private void startAsClient() throws IOException {
         System.out.println("Connecting to server " + host + ":" + port + "...");
@@ -68,21 +107,40 @@ public class ConnectionManager {
         }  
     }
 
+    /**
+     * Initializes input and output streams for the socket.
+     *
+     * @throws IOException if stream creation fails
+     */
     // Both sides then use their Sockets to create input and output streams for communication.
     private void setUpStreams() throws IOException {
         out = new PrintWriter(socket.getOutputStream(), true); // used to send text data
         in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // used to recieve text data
     }
 
+    /**
+     * Sends a message to the connected peer.
+     *
+     * @param message the message to send
+     */
     // wrapper for out.println and in.println. Basically hides the logic of using PrintWriter and BufferedReader. 
     public void sendMessage(String message) { 
         out.println(message);
     }
     
+    /**
+     * Receives a message from the connected peer.
+     *
+     * @return the received message
+     * @throws IOException if reading from the stream fails
+     */
     public String receiveMessage() throws IOException { // IOException also have to be thrown here due to it being thrown in the declaration of BufferedReader.readLine().
         return in.readLine();
     }
 
+    /**
+     * Closes the socket and server socket if they are open.
+     */
     public void closeSocket() {
         try {
             if (socket != null) {
