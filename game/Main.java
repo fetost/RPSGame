@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
-// TODO: imlement validation for edge cases for server/client connection
-// TODO: double check the logic of the server/client connection
-// TODO: test the connection on a different computer 
-// TODO: implement an interface instead of using the terminal
+// TODO: double check the logic of the server/client connection. 
+// TODO: handle Draw as not a win. 
+// TODO: fix JavaDoc.
+// TODO: change hardcoded "localhost", allowing another computer to connect. 
+// TODO: implement username(?). Maybe add userName in the constructor for ConnectionManager?
 
 public class Main {
     public static void main(String[] args) throws ValidationException, IOException {       
@@ -51,7 +52,10 @@ public class Main {
             TypeOfPlay play = new TypeOfPlay(userMove, opponentMove); 
             boolean win = play.determineWin();
 
-            if (win) {
+            if (userMove.equals(opponentMove)) {
+                System.out.println("Its a draw!");
+            }
+            else if (win) {
                 System.out.println("You won!");
             }
             else {
