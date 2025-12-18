@@ -5,7 +5,6 @@ import java.util.Random;
 import java.util.Scanner;
 
 // TODO: double check the logic of the server/client connection. 
-// TODO: fix JavaDoc.
 // TODO: change hardcoded "localhost", allowing another computer to connect. 
 // TODO: implement username(?). Maybe add userName in the constructor for ConnectionManager?
 
@@ -31,7 +30,7 @@ public class Main {
      * @throws ValidationException if user input is invalid
      * @throws IOException if a network error occurs
      */
-    
+
     public static void main(String[] args) throws ValidationException, IOException {       
         Scanner scanner = new Scanner(System.in);
         System.out.println("Are you hosting? (y/n)");
@@ -41,10 +40,18 @@ public class Main {
         if (!choice.equals("y") && !choice.equals("n")) {
             throw new ValidationException("Learn to read dummy");
         }
+
+        System.out.println("Type you username");
+        System.out.print("> ");
+
+        String userName = scanner.nextLine().trim();
+        if (userName.isEmpty()) {   
+            throw new ValidationException("Invalid username");
+        }
         
         // Instances are declared here so its not made each iteration
         Random random = new Random(); 
-        ConnectionManager cm = new ConnectionManager(choice);
+        ConnectionManager cm = new ConnectionManager(choice, userName);
         cm.setUpConnection();
     
         while (true) {
@@ -61,9 +68,10 @@ public class Main {
             cm.sendMessage(userMove);
             System.out.println("Waiting for opponent...");
             String opponentMove = cm.receiveMessage();
+            String opponentUsername = cm.getOpponentUsername();
             
-            System.out.println("Your move is: " + userMove);
-            System.out.println("Opponent move is: " + opponentMove);
+            System.out.println(userName + " move is: " + userMove);
+            System.out.println(opponentUsername + " move is: " + opponentMove);
 
             /* 
             Creating an instance (object) of the TypeOfPlay class.

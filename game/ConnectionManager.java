@@ -18,13 +18,15 @@ import java.net.Socket;
 public class ConnectionManager {
     private final String isServer;
     private final int port = 5555; 
-    private final String host = "localhost"; // will always be 127.0.0.1
+    private final String host = "192.168.1.91";
     private boolean serverConnected;
 
     private ServerSocket serverSocket;
     private Socket socket;
     PrintWriter out;
     BufferedReader in;
+    String userName;
+    String opponentUsername;
 
     /**
      * Constructor for the ConnectionManager.
@@ -32,8 +34,9 @@ public class ConnectionManager {
      * @param isServer "y" to host the game, "n" to connect as a client
      */
 
-    public ConnectionManager(String isServer) {
+    public ConnectionManager(String isServer, String userName) {
         this.isServer = isServer;
+        this.userName = userName;
     }
 
     /**
@@ -49,12 +52,10 @@ public class ConnectionManager {
         try {
             if (isServer.equals("y")) {
                 startAsServer();
-                setUpStreams();
                 sendMessage("READY");
             } 
             else {
                 startAsClient();
-                setUpStreams();
             }
         } 
         catch (IOException e) { // Use IOException for easy error message. Using getMessage() shows the error. 
@@ -77,7 +78,10 @@ public class ConnectionManager {
         serverSocket = new ServerSocket(port);
         System.out.println("Server waiting for a client to connect...");
         socket = serverSocket.accept(); // returns socket, server will stop at this line until client is connected, called blocking call.
-        System.out.println("Client connected!");
+        setUpStreams();
+        opponentUsername = receiveMessage();
+        sendMessage(userName);
+        System.out.println(opponentUsername + " connected!");
     }
 
     /**
@@ -96,9 +100,11 @@ public class ConnectionManager {
             try {
                 socket = new Socket(host, port); // can catch IOException if server is not ready. If ready -> continue with setUpStream()
                 setUpStreams();
+                sendMessage(userName);
+                opponentUsername = receiveMessage();
                 if (receiveMessage().equals("READY")) { // this makes the client have to wait for the server. 
                     serverConnected = true;
-                    System.out.println("Connected to server!");
+                    System.out.println("Connected to " + opponentUsername);
                 }
             } 
             catch (IOException e) {
@@ -136,6 +142,10 @@ public class ConnectionManager {
      */
     public String receiveMessage() throws IOException { // IOException also have to be thrown here due to it being thrown in the declaration of BufferedReader.readLine().
         return in.readLine();
+    }
+
+    public String getOpponentUsername() {
+        return opponentUsername;
     }
 
     /**
