@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
-// TODO: double check the logic of the server/client connection. 
-// TODO: change hardcoded "localhost", allowing another computer to connect. 
-// TODO: implement username(?). Maybe add userName in the constructor for ConnectionManager?
 
 /**
  * Entry point for the Rock-Paper-Scissors game.
