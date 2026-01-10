@@ -1,0 +1,9 @@
+# macOS files
+.DS_Store
+
+# Compiled class files
+*.class
+
+# Build folders
+/bin/
+/out/
