@@ -40,16 +40,29 @@ public class Main {
 
         System.out.println("Type you username");
         System.out.print("> ");
-
         String userName = scanner.nextLine().trim();
         if (userName.isEmpty()) {   
             throw new ValidationException("Invalid username");
         }
+
+        String host = null;
+        if (choice.equals("n")) {
+            System.out.println("Enter host IP adress");
+            System.out.println("> ");
+            host = scanner.nextLine().trim();
+
+            if (host.isEmpty()) {
+                throw new ValidationException("Invalid host IP");
+            }
+        }
+        ConnectionManager cm = new ConnectionManager(choice, userName, host);
+        cm.setUpConnection();
+
         
         // Instances are declared here so its not made each iteration
-        Random random = new Random(); 
-        ConnectionManager cm = new ConnectionManager(choice, userName);
-        cm.setUpConnection();
+        //Random random = new Random(); 
+        //ConnectionManager cm = new ConnectionManager(choice, userName);
+        //cm.setUpConnection();
     
         while (true) {
             System.out.println("----------------------------");
@@ -59,7 +72,7 @@ public class Main {
 
             String userMove = scanner.nextLine().trim(); 
             if (userMove.isEmpty()) { // have to use isEmpty because nextLine() is never null
-                throw new ValidationException("Type something idiot");
+                throw new ValidationException("Didn't type a valid move");
             }
 
             cm.sendMessage(userMove);
