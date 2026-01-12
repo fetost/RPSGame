@@ -8,6 +8,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import javax.swing.JDialog;
+
 /**
  * Manages the network connection for the Rock-Paper-Scissors game.
  * <p>
@@ -17,7 +19,7 @@ import java.net.Socket;
  */
 
 public class ConnectionManager {
-    private final String isServer;
+    private final boolean isServer;
     private final int port = 5555; 
     private final String host;
     private boolean serverConnected;
@@ -35,7 +37,7 @@ public class ConnectionManager {
      * @param isServer "y" to host the game, "n" to connect as a client
      */
 
-    public ConnectionManager(String isServer, String userName, String host) {
+    public ConnectionManager(boolean isServer, String userName, String host) {
         this.isServer = isServer;
         this.userName = userName;
         this.host = host;
@@ -52,7 +54,7 @@ public class ConnectionManager {
 
     public void setUpConnection() {
         try {
-            if (isServer.equals("y")) {
+            if (isServer) {
                 startAsServer();
                 sendMessage("READY");
             } 
@@ -77,12 +79,11 @@ public class ConnectionManager {
     */
     private void startAsServer() throws IOException {
         String ip = InetAddress.getLocalHost().getHostAddress();
-        System.out.println("Host IP: " + ip);
+        JDialog serverWaitingScreen = GameDesign.showServerWaitingScreen(ip);
         
-        System.out.println("Starting server on port " + port + "...");
         serverSocket = new ServerSocket(port);
-        System.out.println("Server waiting for a client to connect...");
         socket = serverSocket.accept(); // returns socket, server will stop at this line until client is connected, called blocking call.
+        serverWaitingScreen.dispose();
         setUpStreams();
         opponentUsername = receiveMessage();
         sendMessage(userName);
@@ -103,8 +104,7 @@ public class ConnectionManager {
         if (host == null) {
             throw new IOException("Host IP not provided");
         }
-
-        System.out.println("Connecting to server " + host + ":" + port + "...");
+        JDialog clientWaitingScreen = new JDialog();
         while (!serverConnected) {
             try {
                 socket = new Socket(host, port); // can catch IOException if server is not ready. If ready -> continue with setUpStream()
@@ -113,7 +113,7 @@ public class ConnectionManager {
                 opponentUsername = receiveMessage();
                 if (receiveMessage().equals("READY")) { // this makes the client have to wait for the server. 
                     serverConnected = true;
-                    System.out.println("Connected to " + opponentUsername);
+                    clientWaitingScreen.dispose();
                 }
             } 
             catch (IOException e) {

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
+import javax.swing.JDialog;
+
 
 /**
  * Entry point for the Rock-Paper-Scissors game.
@@ -31,96 +33,55 @@ public class Main {
     public static void main(String[] args) throws ValidationException, IOException {       
         Scanner scanner = new Scanner(System.in);
 
-        String choice; // declared outside of while and if, due to value being needed later for connection. 
-        while (true) {
-            System.out.println("Are you hosting? (y/n)");
-            System.out.print("> ");
-            choice = scanner.nextLine().trim().toLowerCase();
-            if (choice.equals("y") || choice.equals("n")) {
-                break;
-            }
-            System.out.println("Type either y or n");
-            System.out.println("---------------------");
+        boolean choice = GameDesign.isHosting(); // have to make static reference.
+        String userName = GameDesign.setUsername().trim();
+        String host = null;
+        if (!choice) {
+            host = GameDesign.isNotHosting().trim();
         }
 
-        String userName; // declared outside of while and if, due to value being needed later for connection. 
-        while (true) {
-            System.out.println("Type your username");
-            System.out.print("> ");
-            userName = scanner.nextLine().trim();
-            if (!userName.isEmpty()) {
-                break;
-            }
-            System.out.println("Username cannot be empty");
-            System.out.println("---------------------");
-        } 
-        
-        String host = null; // declared outside of while and if, due to value being needed later for connection. 
-        if (choice.equals("n")) {
-            while (true) {
-                System.out.println("Enter host IP adress");
-                System.out.println("> ");
-                host = scanner.nextLine().trim();
-                if (!host.isEmpty()) {
-                    break;
-                }
-                System.out.println("IP cannot be empty");
-                System.out.println("---------------------");
-            }
-        }
         ConnectionManager cm = new ConnectionManager(choice, userName, host);
         cm.setUpConnection();
+        String[] moves = {"rock", "paper", "scissors"};
 
         while (true) {
-            System.out.println("----------------------------");
-            System.out.println("Enter one of the moves below:");
-            System.out.println("Rock" + "\n" + "Paper" + "\n" + "Scissors");
-            System.out.print("> ");
-
-            String userMove = scanner.nextLine().trim().toLowerCase(); 
-            if (userMove.equalsIgnoreCase("quit")) {
-                cm.sendMessage(userMove);
-                cm.closeSocket();
-                System.out.println("You quit the game");
-                break;
-            }
-            else if (userMove.isEmpty() || (!userMove.equals("rock") && !userMove.equals("paper") && !userMove.equals("scissors"))) { // have to use isEmpty because nextLine() is never null
-                System.out.println("Type either rock, paper or scissors");
-                continue;
-            }
-            else {
-                cm.sendMessage(userMove);
-            }
             
-            System.out.println("Waiting for opponent...");
-            String opponentMove = cm.receiveMessage();
-            if (opponentMove.equalsIgnoreCase("quit")) {
-                System.out.println("Your opponent has left the game");
+           int move = GameDesign.gameScreen();
+           if (move == -1 || move == 3) {
+                cm.sendMessage("quit");
+                cm.closeSocket();
+                break;
+           }
+           String userMove = moves[move];
+           cm.sendMessage(userMove);
+
+           JDialog waitingScreen = GameDesign.showGeneralWaitingScreen();
+           String opponentMove = cm.receiveMessage();
+           if (opponentMove.equalsIgnoreCase("quit")) {
+                waitingScreen.dispose();
+                GameDesign.ifOpponentQuit();
                 cm.closeSocket();
                 break;
             }
-
-            String opponentUsername = cm.getOpponentUsername();
-            
-            System.out.println(userName + " move is: " + userMove);
-            System.out.println(opponentUsername + " move is: " + opponentMove);
+            waitingScreen.dispose();
 
             /* 
             Creating an instance (object) of the TypeOfPlay class.
             The constructor (TypeOfPlay) is called and gets the data.
             Now the "play" variable knows what the moves are, and can call determineWin() using the stored data. 
             */
+            String opponentUsername = cm.getOpponentUsername();
             TypeOfPlay play = new TypeOfPlay(userMove, opponentMove); 
             boolean win = play.determineWin();
 
             if (userMove.equals(opponentMove)) {
-                System.out.println("Its a draw!");
+                GameDesign.isDraw(userMove, opponentMove, userName, opponentUsername);
             }
             else if (win) {
-                System.out.println("You won!");
+                GameDesign.isWin(userMove, opponentMove, userName, opponentUsername);
             }
             else {
-                System.out.println("You lost!");
+                GameDesign.isLoss(userMove, opponentMove, userName, opponentUsername);
             }
         }
     }
