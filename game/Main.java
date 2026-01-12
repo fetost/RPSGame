@@ -45,7 +45,7 @@ public class Main {
 
         String userName; // declared outside of while and if, due to value being needed later for connection. 
         while (true) {
-            System.out.println("Type you username");
+            System.out.println("Type your username");
             System.out.print("> ");
             userName = scanner.nextLine().trim();
             if (!userName.isEmpty()) {
@@ -79,6 +79,7 @@ public class Main {
 
             String userMove = scanner.nextLine().trim().toLowerCase(); 
             if (userMove.equalsIgnoreCase("quit")) {
+                cm.sendMessage(userMove);
                 cm.closeSocket();
                 System.out.println("You quit the game");
                 break;
@@ -87,10 +88,18 @@ public class Main {
                 System.out.println("Type either rock, paper or scissors");
                 continue;
             }
+            else {
+                cm.sendMessage(userMove);
+            }
             
-            cm.sendMessage(userMove);
             System.out.println("Waiting for opponent...");
             String opponentMove = cm.receiveMessage();
+            if (opponentMove.equalsIgnoreCase("quit")) {
+                System.out.println("Your opponent has left the game");
+                cm.closeSocket();
+                break;
+            }
+
             String opponentUsername = cm.getOpponentUsername();
             
             System.out.println(userName + " move is: " + userMove);
