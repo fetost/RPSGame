@@ -31,7 +31,7 @@ public class Main {
     public static void main(String[] args) throws ValidationException, IOException {       
         Scanner scanner = new Scanner(System.in);
 
-        String choice;
+        String choice; // declared outside of while and if, due to value being needed later for connection. 
         while (true) {
             System.out.println("Are you hosting? (y/n)");
             System.out.print("> ");
@@ -43,7 +43,7 @@ public class Main {
             System.out.println("---------------------");
         }
 
-        String userName;
+        String userName; // declared outside of while and if, due to value being needed later for connection. 
         while (true) {
             System.out.println("Type you username");
             System.out.print("> ");
@@ -55,7 +55,7 @@ public class Main {
             System.out.println("---------------------");
         } 
         
-        String host = null;
+        String host = null; // declared outside of while and if, due to value being needed later for connection. 
         if (choice.equals("n")) {
             while (true) {
                 System.out.println("Enter host IP adress");
@@ -78,7 +78,12 @@ public class Main {
             System.out.print("> ");
 
             String userMove = scanner.nextLine().trim().toLowerCase(); 
-            if (userMove.isEmpty() || (!userMove.equals("rock") && !userMove.equals("paper") && !userMove.equals("scissors"))) { // have to use isEmpty because nextLine() is never null
+            if (userMove.equalsIgnoreCase("quit")) {
+                cm.closeSocket();
+                System.out.println("You quit the game");
+                break;
+            }
+            else if (userMove.isEmpty() || (!userMove.equals("rock") && !userMove.equals("paper") && !userMove.equals("scissors"))) { // have to use isEmpty because nextLine() is never null
                 System.out.println("Type either rock, paper or scissors");
                 continue;
             }

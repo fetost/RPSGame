@@ -163,9 +163,11 @@ public class ConnectionManager {
     public void closeSocket() {
         try {
             if (socket != null) {
+                System.out.println("Closing connection...");
                 socket.close();
             }
             if (serverSocket != null) {
+                System.out.println("Closing server connection...");
                 serverSocket.close();
             }
         } 
