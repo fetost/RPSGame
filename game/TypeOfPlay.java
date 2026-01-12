@@ -19,8 +19,8 @@ public class TypeOfPlay {
      * @param opponentMove the move chosen by the opponent
      */
     public TypeOfPlay(String userMove, String opponentMove) {
-        this.userMove = userMove.toLowerCase(); // do lower case here already to make sure that the whole class is using lower case
-        this.opponentMove = opponentMove.toLowerCase();
+        this.userMove = userMove;
+        this.opponentMove = opponentMove;
     }
 
     /**

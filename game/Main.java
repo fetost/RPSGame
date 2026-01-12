@@ -30,51 +30,59 @@ public class Main {
 
     public static void main(String[] args) throws ValidationException, IOException {       
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Are you hosting? (y/n)");
-        System.out.print("> ");
 
-        String choice = scanner.nextLine().trim().toLowerCase(); 
-        if (!choice.equals("y") && !choice.equals("n")) {
-            throw new ValidationException("Learn to read dummy");
+        String choice;
+        while (true) {
+            System.out.println("Are you hosting? (y/n)");
+            System.out.print("> ");
+            choice = scanner.nextLine().trim().toLowerCase();
+            if (choice.equals("y") || choice.equals("n")) {
+                break;
+            }
+            System.out.println("Type either y or n");
+            System.out.println("---------------------");
         }
 
-        System.out.println("Type you username");
-        System.out.print("> ");
-        String userName = scanner.nextLine().trim();
-        if (userName.isEmpty()) {   
-            throw new ValidationException("Invalid username");
-        }
-
+        String userName;
+        while (true) {
+            System.out.println("Type you username");
+            System.out.print("> ");
+            userName = scanner.nextLine().trim();
+            if (!userName.isEmpty()) {
+                break;
+            }
+            System.out.println("Username cannot be empty");
+            System.out.println("---------------------");
+        } 
+        
         String host = null;
         if (choice.equals("n")) {
-            System.out.println("Enter host IP adress");
-            System.out.println("> ");
-            host = scanner.nextLine().trim();
-
-            if (host.isEmpty()) {
-                throw new ValidationException("Invalid host IP");
+            while (true) {
+                System.out.println("Enter host IP adress");
+                System.out.println("> ");
+                host = scanner.nextLine().trim();
+                if (!host.isEmpty()) {
+                    break;
+                }
+                System.out.println("IP cannot be empty");
+                System.out.println("---------------------");
             }
         }
         ConnectionManager cm = new ConnectionManager(choice, userName, host);
         cm.setUpConnection();
 
-        
-        // Instances are declared here so its not made each iteration
-        //Random random = new Random(); 
-        //ConnectionManager cm = new ConnectionManager(choice, userName);
-        //cm.setUpConnection();
-    
         while (true) {
             System.out.println("----------------------------");
             System.out.println("Enter one of the moves below:");
             System.out.println("Rock" + "\n" + "Paper" + "\n" + "Scissors");
             System.out.print("> ");
 
-            String userMove = scanner.nextLine().trim(); 
-            if (userMove.isEmpty()) { // have to use isEmpty because nextLine() is never null
-                throw new ValidationException("Didn't type a valid move");
+            String userMove = scanner.nextLine().trim().toLowerCase(); 
+            if (userMove.isEmpty() || (!userMove.equals("rock") && !userMove.equals("paper") && !userMove.equals("scissors"))) { // have to use isEmpty because nextLine() is never null
+                System.out.println("Type either rock, paper or scissors");
+                continue;
             }
-
+            
             cm.sendMessage(userMove);
             System.out.println("Waiting for opponent...");
             String opponentMove = cm.receiveMessage();
