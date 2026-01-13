@@ -95,7 +95,7 @@ public class GameDesign {
                 null
         );
 
-        JDialog dialog = pane.createDialog(null, "Server Waiting...");
+        JDialog dialog = pane.createDialog(null, "Waiting...");
         dialog.setModal(false); // non-blocking
         dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         dialog.setVisible(true);
@@ -119,7 +119,7 @@ public class GameDesign {
                 null
         );
 
-        JDialog dialog = pane.createDialog(null, "Client Waiting...");
+        JDialog dialog = pane.createDialog(null, "Waiting...");
         dialog.setModal(false);
         dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         dialog.setVisible(true);
@@ -143,7 +143,7 @@ public class GameDesign {
                 null
         );
 
-        JDialog dialog = pane.createDialog(null, "Client Waiting...");
+        JDialog dialog = pane.createDialog(null, "Waiting...");
         dialog.setModal(false);
         dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         dialog.setVisible(true);

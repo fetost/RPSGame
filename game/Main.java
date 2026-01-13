@@ -25,7 +25,7 @@ public class Main {
      * </p>
      *
      * @param args command-line arguments (not used)
-     * @throws ValidationException if user input is invalid
+     * @throws ValidationException 
      * @throws IOException if a network error occurs
      */
 

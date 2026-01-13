@@ -85,9 +85,8 @@ public class ConnectionManager {
         socket = serverSocket.accept(); // returns socket, server will stop at this line until client is connected, called blocking call.
         serverWaitingScreen.dispose();
         setUpStreams();
-        opponentUsername = receiveMessage();
+        opponentUsername = receiveMessage(); // waits for client username before sending it's own, thus avoiding deadlock. (Works as blocking call)
         sendMessage(userName);
-        System.out.println(opponentUsername + " connected!");
     }
 
     /**
@@ -109,7 +108,7 @@ public class ConnectionManager {
             try {
                 socket = new Socket(host, port); // can catch IOException if server is not ready. If ready -> continue with setUpStream()
                 setUpStreams();
-                sendMessage(userName);
+                sendMessage(userName); // first sends it's own username before recieving, thus avoiding deadlock. 
                 opponentUsername = receiveMessage();
                 if (receiveMessage().equals("READY")) { // this makes the client have to wait for the server. 
                     serverConnected = true;
