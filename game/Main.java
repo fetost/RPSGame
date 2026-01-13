@@ -1,7 +1,6 @@
 package game;
 
 import java.io.IOException;
-import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.JDialog;
@@ -10,7 +9,7 @@ import javax.swing.JDialog;
 /**
  * Entry point for the Rock-Paper-Scissors game.
  * <p>
- * Handles user input, sets up the network connection,
+ * Handles user input, sets up the network connection, the GUI, 
  * and runs the main game loop.
  * </p>
  */
@@ -31,8 +30,6 @@ public class Main {
      */
 
     public static void main(String[] args) throws ValidationException, IOException {       
-        Scanner scanner = new Scanner(System.in);
-
         boolean choice = GameDesign.isHosting(); // have to make static reference.
         String userName = GameDesign.setUsername().trim();
         String host = null;
@@ -45,7 +42,6 @@ public class Main {
         String[] moves = {"rock", "paper", "scissors"};
 
         while (true) {
-            
            int move = GameDesign.gameScreen();
            if (move == -1 || move == 3) {
                 cm.sendMessage("quit");

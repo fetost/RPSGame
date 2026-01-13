@@ -34,7 +34,7 @@ public class ConnectionManager {
     /**
      * Constructor for the ConnectionManager.
      *
-     * @param isServer "y" to host the game, "n" to connect as a client
+     * @param isServer "true" if host the game, "false" to connect as a client
      */
 
     public ConnectionManager(boolean isServer, String userName, String host) {
